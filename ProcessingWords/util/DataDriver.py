@@ -1,10 +1,20 @@
+# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+'''
+@Time    : 2018/12/21 15:50
+@Author  : suojijun1994@gmail.com
+@Site    :
+@File    : ExcelExtractor.py
+@Software: PyCharm
+'''
+from builtins import object
 
 from DataStructure.Article import Article
 from DataStructure.Comment import Comment
 from DataStructure.Reply import Reply
 from FileUtil import PathHelper
 import openpyxl
-import json
+
 
 class ExcelExtractor(object):
     def __init__(self, filepath, sheetname = None):
@@ -129,23 +139,19 @@ class ExcelExtractor(object):
             ws = wb.active
         return ws
 
-    def save_to_json(self):
-        resultfile = PathHelper.generate_result_id()
-        with open(resultfile, 'w+') as result:
-            for item in self.blogs:
-                tmp = json.dumps(item, ensure_ascii=False, default=lambda x: x.__dict__)
-                result.writelines(tmp.encode('utf-8') + '\n')
+    def save(self):
+        PathHelper.save_to_json(self.blogs)
 
     def start(self):
         ws =self.get_excel_sheet()
         for row in ws.rows:
             self.extract(row)
         self.add_blog(None)
-        self.save_to_json()
+        self.save()
 
 # just for testing
 if __name__ == "__main__":
-    filepath = PathHelper.get_resource_abs_path("test.xlsx")
+    filepath = PathHelper.get_resource_abs_path("test1.xlsx")
     ExcelExtractor(filepath).start()
 
 

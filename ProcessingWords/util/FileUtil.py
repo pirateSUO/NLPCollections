@@ -3,14 +3,17 @@
 # @Time    : 2018/12/17 14:53
 # @Author  : suojijun1994@gmail.com
 # @Site    :
-# @File    : Reply.py
+# @File    : FileUtil.py
 # @Software: PyCharm
 import os
 import json
+from builtins import classmethod, str, object
+
 from timeUtils import current_time
 from DataStructure.Article import Article
 from DataStructure.Comment import Comment
 from DataStructure.Reply import Reply
+import os
 
 class PathHelper(object):
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -57,7 +60,7 @@ class PathHelper(object):
     def get_array_from_json(self, filename):
         filepath = self.get_result_abs_path(filename)
         blogs = []
-        with open(filepath, 'r') as f:
+        with os.open(filepath, 'r') as f:
             while True:
                 line = f.readline().decode('UTF-8')
                 if not line:
@@ -66,6 +69,14 @@ class PathHelper(object):
                 obj = self.json2obj(jline)
                 blogs.append(obj)
         return blogs
+
+    @classmethod
+    def save_to_json(self, arr = []):
+        resultfile = PathHelper.generate_result_id()
+        with os.open(resultfile, 'w+') as result:
+            for item in arr:
+                tmp = json.dumps(item, ensure_ascii=False, default=lambda x: x.__dict__)
+                result.writelines(tmp.encode('utf-8') + '\n')
 
 # just for testing
 if __name__ == '__main__':
